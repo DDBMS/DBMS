@@ -27,4 +27,4 @@ def upload():
     return 'Hello, World!'
 
 if __name__ == '__main__':
-    app.run(debug=True,port=10022)
+    app.run(host="t22.tfcis.org",debug=True,port=10022)
