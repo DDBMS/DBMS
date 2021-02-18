@@ -22,6 +22,11 @@ def upload():
     try:
         # 建立Connection物件
         conn = pymysql.connect(**db_settings)
+
+        cursorObject = conn.cursor()
+        sqlQuery = "CREATE TABLE Employee(id int, LastName varchar(32), FirstName varchar(32), DepartmentCode int)"
+        cursorObject.execute(sqlQuery)
+
     except Exception as ex:
         print(ex)
     return 'Hello, World!'
