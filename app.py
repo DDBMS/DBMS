@@ -15,8 +15,8 @@ def upload():
         "host": "172.50.0.3",
         "port": 3306,
         "user": "root",
-        "password": "",
-        "db": "my_DB",
+        "password": "root_toor",
+        "db": "my_db",
         "charset": "utf8"
     }
     try:
@@ -27,4 +27,4 @@ def upload():
     return 'Hello, World!'
 
 if __name__ == '__main__':
-    app.run(host="t22.tfcis.org",debug=True,port=10022)
+    app.run(host='0.0.0.0',debug=True,port=10022)
