@@ -9,7 +9,7 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB
 def index():
     return 'Hello, World!222222'
 
-@app.route('/file/upload')
+@app.route('/file/upload',methods=['POST'])
 def upload():
     db_settings = {
         "host": "172.50.0.3",
