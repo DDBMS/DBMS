@@ -1,5 +1,6 @@
 from flask import Flask,request
 import pymysql
+import base64
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = "./"
@@ -16,12 +17,11 @@ def upload():
     tag
     key
     """
+
     tag = request.form.get('tag')
     key = request.form.get('key')
     data = request.files['data']
-    print(data)
-
-
+    print(base64.b64encode(data.read()))
 
     db_settings = {
         "host": "172.50.0.3",
