@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask,request
 import pymysql
 
 app = Flask(__name__)
@@ -11,6 +11,18 @@ def index():
 
 @app.route('/file/upload',methods=['POST'])
 def upload():
+    """
+    data
+    tag
+    key
+    """
+    tag = request.form.get('tag')
+    key = request.form.get('key')
+    data = request.files['data']
+    print(data)
+
+
+
     db_settings = {
         "host": "172.50.0.3",
         "port": 3306,
@@ -19,6 +31,8 @@ def upload():
         "db": "my_db",
         "charset": "utf8"
     }
+
+
     try:
         # 建立Connection物件
         conn = pymysql.connect(**db_settings)
