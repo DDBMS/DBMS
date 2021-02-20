@@ -27,7 +27,7 @@ def test():
     DBHosts = []
     try:
         options = DBGroups['settings']
-        for host in options['host']:
+        for host in DBGroups['hosts']:
             options['host'] = host
             print('host??' + host)
             DBHosts.append(pymysql.connect(**options))
