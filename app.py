@@ -47,7 +47,7 @@ def upload():
 
     return jsonify({
         'status': True,
-        'data': base64.b64encode(data.read())
+        'data': base64.urlsafe_b64encode(data.read())
     })
 
 
