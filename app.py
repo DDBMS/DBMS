@@ -12,7 +12,7 @@ DBHosts = []
 try:
     options = DBGroups['settings']
     for host in options.host:
-        options.host = host
+        options['host'] = host
         DBHosts.append(pymysql.connect(**options))
 except Exception as ex:
     print(ex)
