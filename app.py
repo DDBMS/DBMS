@@ -45,10 +45,10 @@ def upload():
     except Exception as ex:
         print(ex)
 
-    print(base64)
+    print(encoded)
     return jsonify({
         'status': True,
-        'data': base64
+        'data': encoded
     })
 
 
