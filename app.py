@@ -46,6 +46,7 @@ def upload():
         print(ex)
 
     print(encoded)
+    print('read data')
     return jsonify({
         'status': True,
         'tag': tag,
