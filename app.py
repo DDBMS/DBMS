@@ -27,7 +27,9 @@ def test():
         cursorObject = conn.cursor()
         sqlQuery = "CREATE TABLE Test(tag varchar(32),Data longtext)"
         cursorObject.execute(sqlQuery)
+        print('wow?')
     print('wow!')
+    return 'wow!!'
 
 @app.route('/file/upload', methods=['POST'])
 def upload():
