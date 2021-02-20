@@ -13,6 +13,7 @@ try:
     options = DBGroups['settings']
     for host in options['host']:
         options['host'] = host
+        print('host??' + host)
         DBHosts.append(pymysql.connect(**options))
 except Exception as ex:
     print(ex)
