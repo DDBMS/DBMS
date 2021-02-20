@@ -46,7 +46,8 @@ def upload():
         print(ex)
 
     return jsonify({
-        'status': True
+        'status': True,
+        'data': base64.b64encode(data.read())
     })
 
 
