@@ -23,7 +23,7 @@ def upload():
     tag = request.form.get('tag')
     key = request.form.get('key')
     data = request.files['data']
-    print(base64.b64encode(data.read()))
+    encoded = base64.b64encode(data.read()).decode('utf-8')
 
     db_settings = {
         "host": "172.50.0.3",
@@ -45,9 +45,10 @@ def upload():
     except Exception as ex:
         print(ex)
 
+    print(base64)
     return jsonify({
         'status': True,
-        'data': base64.b64encode(data.read()).decode('utf-8')
+        'data': base64
     })
 
 
