@@ -1,16 +1,33 @@
 from flask import Flask, request, jsonify
 import pymysql
 import base64
+from Crypto.Hash import SHA1
+from config import DBGroups, SplitLength
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = "./"
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB
 
+DBHosts = []
+try:
+    options = DBGroups.settings
+    for host in options.host:
+        options.host = host
+        DBHosts.append(pymysql.connect(**options))
+except Exception as ex:
+    print(ex)
 
 @app.route('/')
 def index():
     return 'Hello, World!222222'
 
+@app.route('test')
+def test():
+    for conn in DBHosts:
+        cursorObject = conn.cursor()
+        sqlQuery = "CREATE TABLE Test(tag varchar(32),Data longtext)"
+        cursorObject.execute(sqlQuery)
+    print('wow!')
 
 @app.route('/file/upload', methods=['POST'])
 def upload():
@@ -25,25 +42,22 @@ def upload():
     data = request.files['data']
     encoded = base64.b64encode(data.read()).decode('utf-8')
 
-    db_settings = {
-        "host": "172.50.0.3",
-        "port": 3306,
-        "user": "root",
-        "password": "root_toor",
-        "db": "my_db",
-        "charset": "utf8"
-    }
 
-    try:
-        # 建立Connection物件
-        conn = pymysql.connect(**db_settings)
 
-        cursorObject = conn.cursor()
-        sqlQuery = "CREATE TABLE Employee(id int, LastName varchar(32), FirstName varchar(32), DepartmentCode int)"
-        # cursorObject.execute(sqlQuery)
+    h = SHA1.new()
+    h.update(key.encode('utf-8'))
+    key = h.hexdigest()[0:len(DBHosts)]
+    last = -1
+    for i in range(0, len(key)):
+        length = len(encoded)
 
-    except Exception as ex:
-        print(ex)
+
+
+
+    """        cursorObject = conn.cursor()
+            sqlQuery = "CREATE TABLE Employee(id int, LastName varchar(32), FirstName varchar(32), DepartmentCode int)"
+            # cursorObject.execute(sqlQuery)
+    """
 
     print(encoded)
     print(request.headers)
@@ -51,7 +65,8 @@ def upload():
     return jsonify({
         'status': True,
         'tag': tag,
-        'data': encoded
+        'data': encoded,
+        'len': len(encoded)
     })
 
 @app.route('/file/content', methods=['POST'])
@@ -60,20 +75,12 @@ def content():
     data
     tag
     key
+    len
     """
 
     tag = request.form.get('tag')
     key = request.form.get('key')
-
-    db_settings = {
-        "host": "172.50.0.3",
-        "port": 3306,
-        "user": "root",
-        "password": "root_toor",
-        "db": "my_db",
-        "charset": "utf8"
-    }
-
+    data_length = request.form.get('len')
     try:
         # 建立Connection物件
         conn = pymysql.connect(**db_settings)
