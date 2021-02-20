@@ -62,6 +62,7 @@ def content():
 
     tag = request.form.get('tag')
     key = request.form.get('key')
+
     db_settings = {
         "host": "172.50.0.3",
         "port": 3306,
@@ -83,6 +84,7 @@ def content():
         print(ex)
 
     print('read data')
+    print(request.args)
     return jsonify({
         'status': True,
         'tag': tag,
