@@ -84,7 +84,7 @@ def content():
         print(ex)
 
     print('read data')
-    print(request.args)
+    print(request.data)
     return jsonify({
         'status': True,
         'tag': tag,
