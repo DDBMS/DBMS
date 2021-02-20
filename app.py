@@ -46,6 +46,7 @@ def upload():
         print(ex)
 
     print(encoded)
+    print(request.headers)
     print(request.data)
     return jsonify({
         'status': True,
@@ -85,6 +86,7 @@ def content():
         print(ex)
 
     print('read data')
+    print(request.headers)
     print(request.data)
     return jsonify({
         'status': True,
