@@ -62,9 +62,6 @@ def content():
 
     tag = request.form.get('tag')
     key = request.form.get('key')
-    data = request.files['data']
-    encoded = base64.b64encode(data.read()).decode('utf-8')
-
     db_settings = {
         "host": "172.50.0.3",
         "port": 3306,
@@ -85,11 +82,11 @@ def content():
     except Exception as ex:
         print(ex)
 
-    print(encoded)
+    print('read data')
     return jsonify({
         'status': True,
         'tag': tag,
-        'data': encoded
+        'data': ""
     })
 
 
