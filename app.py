@@ -11,7 +11,7 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB
 DBHosts = []
 try:
     options = DBGroups['settings']
-    for host in options.host:
+    for host in options['host']:
         options['host'] = host
         DBHosts.append(pymysql.connect(**options))
 except Exception as ex:
