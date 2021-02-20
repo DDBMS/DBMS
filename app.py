@@ -21,7 +21,7 @@ except Exception as ex:
 def index():
     return 'Hello, World!222222'
 
-@app.route('test')
+@app.route('/test')
 def test():
     for conn in DBHosts:
         cursorObject = conn.cursor()
