@@ -24,6 +24,15 @@ def index():
 
 @app.route('/test')
 def test():
+    DBHosts = []
+    try:
+        options = DBGroups['settings']
+        for host in options['host']:
+            options['host'] = host
+            print('host??' + host)
+            DBHosts.append(pymysql.connect(**options))
+    except Exception as ex:
+        print(ex)
     for conn in DBHosts:
         cursorObject = conn.cursor()
         sqlQuery = "CREATE TABLE Test(tag varchar(32),Data longtext)"
