@@ -70,7 +70,7 @@ def upload():
     # HTTP Request Params
     tag = request.form.get('tag')
     key = request.form.get('key')
-    data = request.files['data']
+    data = request.files['data'].read()
 
     # 處理並加密資料
     eaten = EatData.encrypt(
