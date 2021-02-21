@@ -34,16 +34,17 @@ def save(tag, hosts, key, cipher):
           tag  = values(tag),
           data = values(data) 
         """
+        print(tag)
         cursor.execute(sql, {
             'tag': tag,
             'data': data_ok[X[1][0]:X[1][0] + X[1][1]]
         })
         hosts[X[0]].commit()
         hosts[X[0]].close()
-        print({
-            'tag': tag,
-            'data': data_ok[X[1][0]:X[1][0] + X[1][1]]
-        })
+    print({
+        'tag': tag,
+        'data': data_ok[X[1][0]:X[1][0] + X[1][1]]
+    })
 
 
 def read(tag, hosts, key, data_length):
