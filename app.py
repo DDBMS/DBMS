@@ -7,7 +7,7 @@ from config import DBGroups, SplitLength
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = "./"
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB
-
+"""
 DBHosts = []
 try:
     for host in DBGroups:
@@ -15,7 +15,7 @@ try:
         DBHosts.append(pymysql.connect(**host))
 except Exception as ex:
     print(ex)
-
+"""
 
 @app.route('/')
 def index():
@@ -42,6 +42,13 @@ def upload():
     tag
     key
     """
+    DBHosts = []
+    try:
+        for host in DBGroups:
+            print('  > MySQL Host: ' + host['host'])
+            DBHosts.append(pymysql.connect(**host))
+    except Exception as ex:
+        print(ex)
 
     tag = request.form.get('tag')
     key = request.form.get('key')

@@ -13,8 +13,7 @@ DBGroups = [
         "user": "root",
         "password": "root_toor",
         "db": "my_db",
-        "charset": "utf8",
-
+        "charset": "utf8"
     },
     {
         "port": 3306,
