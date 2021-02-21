@@ -72,15 +72,11 @@ def upload():
             'tag': tag,
             'data': encoded[last + 1:last + length]
         })
-        print('  > MySQL Perform SQL: ' + sql)
+        print('  > MySQL' + str(i) + ' Perform SQL: ' + sql)
         print('Data %s' % encoded[last:last + length])
         last = last + length
         if out : break
 
-    """        cursorObject = conn.cursor()
-            sqlQuery = "CREATE TABLE Employee(id int, LastName varchar(32), FirstName varchar(32), DepartmentCode int)"
-            # cursorObject.execute(sqlQuery)
-    """
 
     print(encoded)
     #print(request.headers)
