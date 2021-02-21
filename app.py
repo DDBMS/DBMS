@@ -55,6 +55,7 @@ def upload():
     tag
     key
     """
+    # Database Integration
     DBHosts = []
     try:
         for host in DBGroups:
@@ -63,6 +64,7 @@ def upload():
     except Exception as ex:
         print(ex)
 
+    # HTTP Request Params
     tag = request.form.get('tag')
     key = request.form.get('key')
     data = request.files['data']
@@ -70,12 +72,12 @@ def upload():
 
     h = SHA1.new()
     h.update(key.encode('utf-8'))
-
     key = h.hexdigest()[0:len(DBHosts)]
-    last = 0
+
     print(SplitLength)
     print(key)
 
+    last = 0
     out = False
     queue = []
     for i in range(0, len(key)):
@@ -136,28 +138,68 @@ def content():
     key
     len
     """
-
-    tag = request.form.get('tag')
-    key = request.form.get('key')
-    data_length = request.form.get('len')
+    # Database Integration
+    DBHosts = []
     try:
-        # 建立Connection物件
-        conn = pymysql.connect(**db_settings)
-
-        cursorObject = conn.cursor()
-        sqlQuery = "CREATE TABLE Employee(id int, LastName varchar(32), FirstName varchar(32), DepartmentCode int)"
-        # cursorObject.execute(sqlQuery)
-
+        for host in DBGroups:
+            print('  > MySQL Host: ' + host['host'])
+            DBHosts.append(pymysql.connect(**host))
     except Exception as ex:
         print(ex)
 
-    print('read data')
-    print(request.headers)
-    print(request.data)
+    # HTTP Params
+    tag = request.form.get('tag')
+    key = request.form.get('key')
+    data_length = request.form.get('len')
+
+    h = SHA1.new()
+    h.update(key.encode('utf-8'))
+    key = h.hexdigest()[0:len(DBHosts)]
+
+    data = ""
+    last = 0
+    out = False
+    queue = []
+    for i in range(0, len(key)):
+        length = int(data_length * SplitLength[key[i]])
+
+        if i == len(key) - 1:
+            length = data_length - last
+
+        if last + length > data_length:
+            length = data_length - last
+            out = True
+
+        queue.append((i,(last,length)))
+
+        last = last + length
+        if out: break
+
+    for X in queue:
+        cursor = DBHosts[X[0]].cursor(pymysql.cursors.DictCursor)
+        sql = """
+        SELECT * from Test 
+        where 
+          tag = %(tag)s
+        """
+        cursor.execute(sql, {
+            'tag': tag
+        })
+        got = cursor.fetchone()
+        print(tag)
+        print(got)
+        DBHosts[X[0]].commit()
+        DBHosts[X[0]].close()
+
+        if got :
+            data += got['data']
+
+        print('  > MySQL' + str(X[0]) + ' Perform SQL: ' + sql)
+
     return jsonify({
         'status': True,
         'tag': tag,
-        'data': ""
+        'data': data
     })
 
 
