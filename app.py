@@ -81,7 +81,7 @@ def upload():
 
     cipher = AES.new(encrypt_key, AES.MODE_EAX)
     encrypted, trash = cipher.encrypt_and_digest(encoded)
-    print(encrypted.decode('utf8'))
+    print(base64.b64encode(encrypted).decode('utf8'))
 
     #print(SplitLength)
     #print(key)
