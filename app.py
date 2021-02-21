@@ -57,6 +57,11 @@ def upload():
     print(key)
     for i in range(0, len(key)):
         length = int(len(encoded) * SplitLength[key[i]])
+
+        if i == len(key)-1:
+            length = len(encoded) - last
+
+
         cursor = DBHosts[i].cursor()
         sql = "INSERT INTO Test VALUES (%(tag)s, %(data)s)"
         cursor.execute(sql, {
