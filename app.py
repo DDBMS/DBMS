@@ -81,6 +81,8 @@ def upload():
             'tag': tag,
             'data': encoded[X[1][0]:X[1][0]+X[1][1]]
         })
+        DBHosts[X[0]].commit()
+        DBHosts[X[0]].close()
         print({
             'tag': tag,
             'data': encoded[X[1][0]:X[1][0]+X[1][1]]
