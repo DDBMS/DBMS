@@ -32,5 +32,6 @@ def decrypt(key, cipher_data, iv, db_num):
 
     cipher = AES.new(encrypt_key, AES.MODE_CFB, iv=base64.b64decode(iv))
 
-    plaintext = cipher.decrypt(base64.b64decode(cipher_data))
-    print(plaintext)
+    decrypted = cipher.decrypt(base64.b64decode(cipher_data))
+    print(decrypted)
+    return decrypted

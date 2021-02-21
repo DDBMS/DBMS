@@ -132,7 +132,7 @@ def content():
     return jsonify({
         'status': True,
         'tag': tag,
-        'data': eaten[0].decode('utf8')
+        'data': eaten.decode('utf8')
     })
 
 
