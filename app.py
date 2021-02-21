@@ -68,8 +68,8 @@ def upload():
     """
 
     print(encoded)
-    print(request.headers)
-    print(request.data)
+    #print(request.headers)
+    #print(request.data)
     return jsonify({
         'status': True,
         'tag': tag,
