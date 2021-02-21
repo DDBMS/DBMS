@@ -55,12 +55,16 @@ def upload():
     last = 0
     print(SplitLength)
     print(key)
+    out = False
     for i in range(0, len(key)):
         length = int(len(encoded) * SplitLength[key[i]])
 
         if i == len(key)-1:
             length = len(encoded) - last
 
+        if last + length > len(encoded):
+            length = len(encoded) - last
+            out = True
 
         cursor = DBHosts[i].cursor()
         sql = "INSERT INTO Test VALUES (%(tag)s, %(data)s)"
@@ -71,6 +75,7 @@ def upload():
         print('  > MySQL Perform SQL: ' + sql)
         print('Data %s' % encoded[last:last + length])
         last = last + length
+        if out : break
 
     """        cursorObject = conn.cursor()
             sqlQuery = "CREATE TABLE Employee(id int, LastName varchar(32), FirstName varchar(32), DepartmentCode int)"
