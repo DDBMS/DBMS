@@ -87,7 +87,7 @@ def upload():
     plaintext = cipher.decrypt(base64.b64decode(
         b"P8HDNl54bLIUwi4syTgvM3TaCEqthZ2h+aie5H+omk/wjKnmagkYuKK9ArG4k+/Qhj5D+3i146Sil1cBBVktq3aJwtxkpv5XRX/YOWyeOc4=s"
     ))
-    print(plaintext)
+    print(plaintext.decode('utf8'))
     #print(SplitLength)
     #print(key)
 
