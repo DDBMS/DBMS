@@ -16,9 +16,11 @@ try:
 except Exception as ex:
     print(ex)
 
+
 @app.route('/')
 def index():
     return 'Hello, World!222222'
+
 
 @app.route('/test')
 def test():
@@ -26,9 +28,10 @@ def test():
         cursor_object = conn.cursor()
         sql_query = "CREATE TABLE Test(tag varchar(32),Data longtext)"
         cursor_object.execute(sql_query)
-        print('  > MySQL Perform SQL: ')
+        print('  > MySQL Perform SQL: ' + sql_query)
 
     return 'wow!!'
+
 
 @app.route('/file/upload', methods=['POST'])
 def upload():
@@ -43,17 +46,20 @@ def upload():
     data = request.files['data']
     encoded = base64.b64encode(data.read()).decode('utf-8')
 
-
-
     h = SHA1.new()
     h.update(key.encode('utf-8'))
     key = h.hexdigest()[0:len(DBHosts)]
     last = -1
     for i in range(0, len(key)):
-        length = len(encoded)
-
-
-
+        length = int(len(encoded) * SplitLength[key[i]])
+        cursor = DBHosts[i].cursor()
+        sql = "INSERT INTO Test VALUES (%(tag)s, %(data)s)"
+        cursor.execute(sql, {
+            'tag': tag,
+            'data': encoded[last + 1:last + length]
+        })
+        print('  > MySQL Perform SQL: ' + sql)
+        last = last + length
 
     """        cursorObject = conn.cursor()
             sqlQuery = "CREATE TABLE Employee(id int, LastName varchar(32), FirstName varchar(32), DepartmentCode int)"
@@ -69,6 +75,7 @@ def upload():
         'data': encoded,
         'len': len(encoded)
     })
+
 
 @app.route('/file/content', methods=['POST'])
 def content():
