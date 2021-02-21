@@ -76,7 +76,7 @@ def upload():
 
     for X in queue:
         cursor = DBHosts[X[0]].cursor()
-        sql = "INSERT INTO Test VALUES (%(tag)s, %(data)s)"
+        sql = "REPLACE INTO Test VALUES (%(tag)s, %(data)s)"
         cursor.execute(sql, {
             'tag': tag,
             'data': encoded[X[1][0]:X[1][0]+X[1][1]]
