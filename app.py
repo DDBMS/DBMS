@@ -64,6 +64,7 @@ def upload():
             'data': encoded[last + 1:last + length]
         })
         print('  > MySQL Perform SQL: ' + sql)
+        print('Data %s' % encoded[last + 1:last + length])
         last = last + length
 
     """        cursorObject = conn.cursor()
