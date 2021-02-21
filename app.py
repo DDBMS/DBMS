@@ -81,6 +81,10 @@ def upload():
             'tag': tag,
             'data': encoded[X[1][0]:X[1][0]+X[1][1]]
         })
+        print({
+            'tag': tag,
+            'data': encoded[X[1][0]:X[1][0]+X[1][1]]
+        })
         print('  > MySQL' + str(X[0]) + ' Perform SQL: ' + sql)
 
     print(encoded)
