@@ -125,6 +125,7 @@ def content():
     eaten = EatData.decrypt(
         key=key,
         db_num=len(db_hosts),
+        iv=iv,
         cipher_data=cipher.encode('utf8')
     )
 
