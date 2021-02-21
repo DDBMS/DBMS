@@ -86,7 +86,7 @@ def upload():
 
     print(base64.b64encode(cipher_data).decode('utf8'))
 
-    cipher = AES.new(encrypt_key, AES.MODE_CBC)
+    cipher = AES.new(encrypt_key, AES.MODE_CBC,iv=cipher.iv)
     plaintext = unpad(cipher.decrypt(base64.b64decode(base64.b64encode(cipher_data))), AES.block_size)
     print(plaintext)
     #print(SplitLength)
