@@ -46,7 +46,7 @@ def test():
         cursor_object = conn.cursor()
         sql_query = """
         CREATE TABLE IF NOT EXISTS `Test` (
-          tag varchar(32),
+          tag varchar(36),
           data longtext,
           PRIMARY KEY (tag)
         )
