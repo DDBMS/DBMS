@@ -83,7 +83,7 @@ def upload():
     encrypted,trash = cipher.encrypt_and_digest(encoded.encode('utf8'))
     print(base64.b64encode(encrypted).decode('utf8'))
 
-    plaintext = cipher.decrypt_and_verify(base64.b64decode(
+    plaintext = cipher.decrypt(base64.b64decode(
         b"P8HDNl54bLIUwi4syTgvM3TaCEqthZ2h+aie5H+omk/wjKnmagkYuKK9ArG4k+/Qhj5D+3i146Sil1cBBVktq3aJwtxkpv5XRX/YOWyeOc4=s"
     ))
     print(plaintext)
