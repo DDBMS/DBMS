@@ -26,4 +26,6 @@ DBGroups = [
 ]
 SplitLength = {}
 with open('slen.conf', 'r') as f:
-    SplitLength[f.readline().split(' ')[0]] = float(f.readline().split(' ')[1])
+    lines = f.readlines()
+    for line in lines:
+        SplitLength[line.split(' ')[0]] = float(line.split(' ')[1])
