@@ -1,7 +1,8 @@
 from flask import Flask, request, jsonify
 import pymysql
 import base64
-from Crypto.Hash import SHA1
+from Crypto.Hash import SHA1, MD5
+from Crypto.Cipher import AES
 from config import DBGroups, SplitLength
 
 app = Flask(__name__)
@@ -68,14 +69,22 @@ def upload():
     tag = request.form.get('tag')
     key = request.form.get('key')
     data = request.files['data']
-    encoded = base64.b64encode(data.read()).decode('utf-8')
+    encoded = base64.b64encode(data.read())
+
+    h = MD5.new()
+    h.update(key.encode('utf-8'))
+    encrypt_key = h.hexdigest()
 
     h = SHA1.new()
     h.update(key.encode('utf-8'))
     key = h.hexdigest()[0:len(DBHosts)]
 
-    print(SplitLength)
-    print(key)
+    cipher = AES.new(encrypt_key, AES.MODE_EAX)
+    encrypted, trash = cipher.encrypt_and_digest(encoded)
+    print(encrypted.decode('utf8'))
+
+    #print(SplitLength)
+    #print(key)
 
     last = 0
     out = False
@@ -92,7 +101,7 @@ def upload():
 
         queue.append((i,(last,length)))
 
-        print('Data %s' % encoded[last:last + length])
+        #print('Data %s' % encoded[last:last + length])
         last = last + length
         if out: break
 
@@ -117,9 +126,9 @@ def upload():
             'tag': tag,
             'data': encoded[X[1][0]:X[1][0]+X[1][1]]
         })
-        print('  > MySQL' + str(X[0]) + ' Perform SQL: ' + sql)
+        #print('  > MySQL' + str(X[0]) + ' Perform SQL: ' + sql)
 
-    print(encoded)
+    #print(encoded)
     # print(request.headers)
     # print(request.data)
     return jsonify({
