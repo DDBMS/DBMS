@@ -48,6 +48,7 @@ def upload():
 
     h = SHA1.new()
     h.update(key.encode('utf-8'))
+    print(h.hexdigest())
     key = h.hexdigest()[0:len(DBHosts)]
     last = -1
     print(SplitLength)
