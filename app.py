@@ -80,7 +80,7 @@ def upload():
     key = h.hexdigest()[0:len(DBHosts)]
 
     cipher = AES.new(encrypt_key, AES.MODE_EAX)
-    encrypted = cipher.encrypt_and_digest(encoded.encode('utf8'))
+    encrypted,trash = cipher.encrypt_and_digest(encoded.encode('utf8'))
     print(base64.b64encode(encrypted).decode('utf8'))
 
     plaintext = cipher.decrypt_and_verify(base64.b64decode(
