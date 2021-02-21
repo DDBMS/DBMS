@@ -24,11 +24,24 @@ def index():
 
 @app.route('/test')
 def test():
-    print((DBHosts))
-    print(len(DBHosts))
+    DBHosts = []
+    try:
+        for host in DBGroups:
+            print('  > MySQL Host: ' + host['host'])
+            DBHosts.append(pymysql.connect(**host))
+    except Exception as ex:
+        print(ex)
+
+
     for conn in DBHosts:
         cursor_object = conn.cursor()
-        sql_query = "CREATE TABLE Test(tag varchar(32),Data longtext)"
+        sql_query = """
+        CREATE TABLE IF NOT EXISTS `Test` (
+          tag varchar(32),
+          data longtext,
+          PRIMARY KEY (tag)
+        )
+        """
         cursor_object.execute(sql_query)
         print('  > MySQL Perform SQL: ' + sql_query)
 
