@@ -55,32 +55,37 @@ def upload():
     last = 0
     print(SplitLength)
     print(key)
+
     out = False
+    queue = []
     for i in range(0, len(key)):
         length = int(len(encoded) * SplitLength[key[i]])
 
-        if i == len(key)-1:
+        if i == len(key) - 1:
             length = len(encoded) - last
 
         if last + length > len(encoded):
             length = len(encoded) - last
             out = True
 
-        cursor = DBHosts[i].cursor()
+        queue.append((i,(last,length)))
+
+        print('Data %s' % encoded[last:last + length])
+        last = last + length
+        if out: break
+
+    for X in queue:
+        cursor = DBHosts[X[0]].cursor()
         sql = "INSERT INTO Test VALUES (%(tag)s, %(data)s)"
         cursor.execute(sql, {
             'tag': tag,
-            'data': encoded[last + 1:last + length]
+            'data': encoded[X[1][0]:X[1][0]+X[1][1]]
         })
-        print('  > MySQL' + str(i) + ' Perform SQL: ' + sql)
-        print('Data %s' % encoded[last:last + length])
-        last = last + length
-        if out : break
-
+        print('  > MySQL' + str(X[0]) + ' Perform SQL: ' + sql)
 
     print(encoded)
-    #print(request.headers)
-    #print(request.data)
+    # print(request.headers)
+    # print(request.data)
     return jsonify({
         'status': True,
         'tag': tag,
