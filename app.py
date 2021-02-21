@@ -1,13 +1,18 @@
 from flask import Flask, request, jsonify
 import pymysql
 import base64
-from Crypto.Hash import SHA1, MD5
+from Crypto.Hash import SHA1
+from Crypto.Protocol.KDF import PBKDF2
 from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad, unpad
 from config import DBGroups, SplitLength
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = "./"
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB
+salt = b'\xd0\x18\xa7QM\xd6\x9b\xebxu\xe4\xed\xa8\x83\xf6\xa3/\x01\x9c\x9e\x86n\xda;\x10EdD\xf7\x932\xcc'
+
+
 """
 DBHosts = []
 try:
@@ -71,23 +76,19 @@ def upload():
     data = request.files['data']
     encoded = base64.b64encode(data.read()).decode('utf8')
 
-    h = MD5.new()
-    h.update(key.encode('utf-8'))
-    encrypt_key = h.digest()
-
     h = SHA1.new()
     h.update(key.encode('utf-8'))
     key = h.hexdigest()[0:len(DBHosts)]
 
-    cipher = AES.new(encrypt_key, AES.MODE_EAX)
-    encrypted,trash = cipher.encrypt_and_digest(encoded.encode('utf8'))
-    print(base64.b64encode(encrypted).decode('utf8'))
+    encrypt_key = PBKDF2(key, salt, dkLen=32)
+    cipher = AES.new(encrypt_key, AES.MODE_CBC)
+    cipher_data = cipher.encrypt(pad(encoded.encode('utf8'), AES.block_size))
 
-    cipher = AES.new(encrypt_key, AES.MODE_EAX)
-    plaintext = cipher.decrypt(base64.b64decode(
-        b"P8HDNl54bLIUwi4syTgvM3TaCEqthZ2h+aie5H+omk/wjKnmagkYuKK9ArG4k+/Qhj5D+3i146Sil1cBBVktq3aJwtxkpv5XRX/YOWyeOc4=s"
-    ))
-    print(plaintext.decode('utf8'))
+    print(base64.b64encode(cipher_data).decode('utf8'))
+
+    cipher = AES.new(encrypt_key, AES.MODE_CBC)
+    plaintext = unpad(cipher.decrypt(base64.b64decode(base64.b64encode(cipher_data))), AES.block_size)
+    print(plaintext)
     #print(SplitLength)
     #print(key)
 
