@@ -10,11 +10,9 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB
 
 DBHosts = []
 try:
-    options = DBGroups['settings']
-    for host in DBGroups['hosts']:
-        options['host'] = host
-        print('host??' + host)
-        DBHosts.append(pymysql.connect(**options))
+    for host in DBGroups:
+        print('  > MySQL Host: ' + host['host'])
+        DBHosts.append(pymysql.connect(**host))
 except Exception as ex:
     print(ex)
 
@@ -25,11 +23,11 @@ def index():
 @app.route('/test')
 def test():
     for conn in DBHosts:
-        cursorObject = conn.cursor()
-        sqlQuery = "CREATE TABLE Test(tag varchar(32),Data longtext)"
-        cursorObject.execute(sqlQuery)
-        print('wow?')
-    print('wow!')
+        cursor_object = conn.cursor()
+        sql_query = "CREATE TABLE Test(tag varchar(32),Data longtext)"
+        cursor_object.execute(sql_query)
+        print('  > MySQL Perform SQL: ')
+
     return 'wow!!'
 
 @app.route('/file/upload', methods=['POST'])
