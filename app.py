@@ -51,6 +51,7 @@ def upload():
     key = h.hexdigest()[0:len(DBHosts)]
     last = -1
     print(SplitLength)
+    print(key)
     for i in range(0, len(key)):
         length = int(len(encoded) * SplitLength[key[i]])
         cursor = DBHosts[i].cursor()
