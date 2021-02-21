@@ -12,7 +12,7 @@ def encrypt(key, data, db_num):
     # 產生 Mapping Key
     h = SHA1.new()
     h.update(key.encode('utf-8'))
-    map_key = h.hexdigest()[0:len(db_num)]
+    map_key = h.hexdigest()[0:db_num]
 
     # 產生 加密 Key
     encrypt_key = PBKDF2(key, salt, dkLen=32)
