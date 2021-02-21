@@ -24,6 +24,8 @@ def index():
 
 @app.route('/test')
 def test():
+    print((DBHosts))
+    print(len(DBHosts))
     for conn in DBHosts:
         cursor_object = conn.cursor()
         sql_query = "CREATE TABLE Test(tag varchar(32),Data longtext)"
