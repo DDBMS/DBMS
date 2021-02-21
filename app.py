@@ -98,73 +98,40 @@ def upload():
 @app.route('/file/content', methods=['POST'])
 def content():
     """
-    data
+    iv
     tag
     key
     len
     """
-    # Database Integration
-    DBHosts = []
-    try:
-        for host in DBGroups:
-            print('  > MySQL Host: ' + host['host'])
-            DBHosts.append(pymysql.connect(**host))
-    except Exception as ex:
-        print(ex)
 
-    # HTTP Params
+    # Database Integration
+    db_hosts = AccessData.connect()
+
+    # HTTP Request Params
     tag = request.form.get('tag')
     key = request.form.get('key')
+    iv = request.form.get('iv').encode('utf8')
     data_length = int(request.form.get('len'))
 
-    h = SHA1.new()
-    h.update(key.encode('utf-8'))
-    key = h.hexdigest()[0:len(DBHosts)]
+    # 讀取資料
+    cipher = AccessData.read(
+        tag=tag,
+        hosts=db_hosts,
+        key=key,
+        data_length=data_length
+    )  # 取得加密資料
 
-    data = ""
-    last = 0
-    out = False
-    queue = []
-    for i in range(0, len(key)):
-        length = int(data_length * SplitLength[key[i]])
-
-        if i == len(key) - 1:
-            length = data_length - last
-
-        if last + length > data_length:
-            length = data_length - last
-            out = True
-
-        queue.append((i,(last,length)))
-
-        last = last + length
-        if out: break
-
-    for X in queue:
-        cursor = DBHosts[X[0]].cursor(pymysql.cursors.DictCursor)
-        sql = """
-        SELECT * from Test 
-        where 
-          tag = %(tag)s
-        """
-        cursor.execute(sql, {
-            'tag': tag
-        })
-        got = cursor.fetchone()
-        print(tag)
-        print(got)
-        DBHosts[X[0]].commit()
-        DBHosts[X[0]].close()
-
-        if got :
-            data += got['data']
-
-        print('  > MySQL' + str(X[0]) + ' Perform SQL: ' + sql)
+    # 處理並加密資料
+    eaten = EatData.decrypt(
+        key=key,
+        db_num=len(db_hosts),
+        cipher_data=cipher.encode('utf8')
+    )
 
     return jsonify({
         'status': True,
         'tag': tag,
-        'data': data
+        'data': eaten[0].decode('utf8')
     })
 
 
