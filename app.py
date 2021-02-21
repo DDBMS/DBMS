@@ -73,7 +73,7 @@ def upload():
 
     h = MD5.new()
     h.update(key.encode('utf-8'))
-    encrypt_key = h.hexdigest()
+    encrypt_key = h.digest()
 
     h = SHA1.new()
     h.update(key.encode('utf-8'))
