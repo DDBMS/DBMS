@@ -69,7 +69,7 @@ def upload():
     tag = request.form.get('tag')
     key = request.form.get('key')
     data = request.files['data']
-    encoded = base64.b64encode(data.read())
+    encoded = base64.b64encode(data.read()).decode('utf8')
 
     h = MD5.new()
     h.update(key.encode('utf-8'))
@@ -80,7 +80,7 @@ def upload():
     key = h.hexdigest()[0:len(DBHosts)]
 
     cipher = AES.new(encrypt_key, AES.MODE_EAX)
-    encrypted, trash = cipher.encrypt_and_digest(encoded)
+    encrypted, trash = cipher.encrypt_and_digest(encoded.encode('utf8'))
     print(base64.b64encode(encrypted).decode('utf8'))
 
     #print(SplitLength)
