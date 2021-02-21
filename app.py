@@ -52,7 +52,7 @@ def upload():
     h.update(key.encode('utf-8'))
 
     key = h.hexdigest()[0:len(DBHosts)]
-    last = -1
+    last = 0
     print(SplitLength)
     print(key)
     for i in range(0, len(key)):
@@ -64,7 +64,7 @@ def upload():
             'data': encoded[last + 1:last + length]
         })
         print('  > MySQL Perform SQL: ' + sql)
-        print('Data %s' % encoded[last + 1:last + length])
+        print('Data %s' % encoded[last:last + length])
         last = last + length
 
     """        cursorObject = conn.cursor()
