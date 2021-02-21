@@ -12,7 +12,7 @@ DBHosts = []
 try:
     for host in DBGroups:
         print('  > MySQL Host: ' + host['host'])
-        DBHosts.append(pymysql.connect(**host))
+        # DBHosts.append(pymysql.connect(**host))
 except Exception as ex:
     print(ex)
 
@@ -50,6 +50,7 @@ def upload():
     h.update(key.encode('utf-8'))
     key = h.hexdigest()[0:len(DBHosts)]
     last = -1
+    print(SplitLength)
     for i in range(0, len(key)):
         length = int(len(encoded) * SplitLength[key[i]])
         cursor = DBHosts[i].cursor()
