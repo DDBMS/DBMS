@@ -150,7 +150,7 @@ def content():
     # HTTP Params
     tag = request.form.get('tag')
     key = request.form.get('key')
-    data_length = request.form.get('len')
+    data_length = int(request.form.get('len'))
 
     h = SHA1.new()
     h.update(key.encode('utf-8'))
