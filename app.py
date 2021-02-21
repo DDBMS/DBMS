@@ -14,7 +14,6 @@ import AccessData
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = "./"
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB
-salt = b'\xd0\x18\xa7QM\xd6\x9b\xebxu\xe4\xed\xa8\x83\xf6\xa3/\x01\x9c\x9e\x86n\xda;\x10EdD\xf7\x932\xcc'
 
 
 """
@@ -66,13 +65,7 @@ def upload():
     key
     """
     # Database Integration
-    DBHosts = []
-    try:
-        for host in DBGroups:
-            print('  > MySQL Host: ' + host['host'])
-            DBHosts.append(pymysql.connect(**host))
-    except Exception as ex:
-        print(ex)
+    db_hosts = AccessData.connect()
 
     # HTTP Request Params
     tag = request.form.get('tag')
@@ -83,13 +76,13 @@ def upload():
     eaten = EatData.encrypt(
         key=key,
         data=data,
-        db_num=len(DBHosts)
+        db_num=len(db_hosts)
     )  # map_key, data_b64, iv_b64, cipher_b64
 
     # 儲存資料
     AccessData.save(
         tag=tag,
-        hosts=DBHosts,
+        hosts=db_hosts,
         key=eaten[0],
         cipher=eaten[3]
     )

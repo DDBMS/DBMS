@@ -1,5 +1,5 @@
 import pymysql
-from config import SplitLength
+from config import SplitLength, DBGroups
 
 
 def save(tag, hosts, key, cipher):
@@ -43,3 +43,14 @@ def save(tag, hosts, key, cipher):
             'data': data_ok[X[1][0]:X[1][0]+X[1][1]]
         })
 
+
+def connect():
+    db_hosts = []
+    try:
+        for host in DBGroups:
+            print('  > MySQL Host: ' + host['host'])
+            db_hosts.append(pymysql.connect(**host))
+    except Exception as ex:
+        print(ex)
+
+    return db_hosts
