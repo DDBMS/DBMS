@@ -12,7 +12,7 @@ DBHosts = []
 try:
     for host in DBGroups:
         print('  > MySQL Host: ' + host['host'])
-        # DBHosts.append(pymysql.connect(**host))
+        DBHosts.append(pymysql.connect(**host))
 except Exception as ex:
     print(ex)
 
