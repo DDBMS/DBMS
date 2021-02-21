@@ -83,7 +83,15 @@ def upload():
 
     for X in queue:
         cursor = DBHosts[X[0]].cursor()
-        sql = "REPLACE INTO Test VALUES (%(tag)s, %(data)s)"
+        sql = """
+        INSERT INTO Test 
+          (tag,data)
+        VALUES 
+          (%(tag)s, %(data)s)
+        ON DUPLICATE KEY UPDATE
+          tag  = values(tag),
+          data = values(data) 
+        """
         cursor.execute(sql, {
             'tag': tag,
             'data': encoded[X[1][0]:X[1][0]+X[1][1]]
