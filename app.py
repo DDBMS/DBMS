@@ -1,11 +1,15 @@
 from flask import Flask, request, jsonify
 import pymysql
 import base64
+
 from Crypto.Hash import SHA1
 from Crypto.Protocol.KDF import PBKDF2
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
+
 from config import DBGroups, SplitLength
+import EatData
+import AccessData
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = "./"
@@ -74,74 +78,27 @@ def upload():
     tag = request.form.get('tag')
     key = request.form.get('key')
     data = request.files['data']
-    encoded = base64.b64encode(data.read()).decode('utf8')
 
-    h = SHA1.new()
-    h.update(key.encode('utf-8'))
-    key = h.hexdigest()[0:len(DBHosts)]
+    # 處理並加密資料
+    eaten = EatData.encrypt(
+        key=key,
+        data=data,
+        db_num=len(DBHosts)
+    )  # map_key, data_b64, iv_b64, cipher_b64
 
-    encrypt_key = PBKDF2(key, salt, dkLen=32)
-    cipher = AES.new(encrypt_key, AES.MODE_CBC)
-    cipher_data = cipher.encrypt(pad(encoded.encode('utf8'), AES.block_size))
+    # 儲存資料
+    AccessData.save(
+        tag=tag,
+        hosts=DBHosts,
+        key=eaten[0],
+        cipher=eaten[3]
+    )
 
-    print(base64.b64encode(cipher_data).decode('utf8'))
-
-    cipher = AES.new(encrypt_key, AES.MODE_CBC,iv=cipher.iv)
-    plaintext = unpad(cipher.decrypt(base64.b64decode(base64.b64encode(cipher_data))), AES.block_size)
-    print(plaintext)
-    #print(SplitLength)
-    #print(key)
-
-    last = 0
-    out = False
-    queue = []
-    for i in range(0, len(key)):
-        length = int(len(encoded) * SplitLength[key[i]])
-
-        if i == len(key) - 1:
-            length = len(encoded) - last
-
-        if last + length > len(encoded):
-            length = len(encoded) - last
-            out = True
-
-        queue.append((i,(last,length)))
-
-        #print('Data %s' % encoded[last:last + length])
-        last = last + length
-        if out: break
-
-    for X in queue:
-        cursor = DBHosts[X[0]].cursor()
-        sql = """
-        INSERT INTO Test 
-          (tag,data)
-        VALUES 
-          (%(tag)s, %(data)s)
-        ON DUPLICATE KEY UPDATE
-          tag  = values(tag),
-          data = values(data) 
-        """
-        cursor.execute(sql, {
-            'tag': tag,
-            'data': encoded[X[1][0]:X[1][0]+X[1][1]]
-        })
-        DBHosts[X[0]].commit()
-        DBHosts[X[0]].close()
-        print({
-            'tag': tag,
-            'data': encoded[X[1][0]:X[1][0]+X[1][1]]
-        })
-        #print('  > MySQL' + str(X[0]) + ' Perform SQL: ' + sql)
-
-    #print(encoded)
-    # print(request.headers)
-    # print(request.data)
     return jsonify({
         'status': True,
         'tag': tag,
-        'data': encoded,
-        'len': len(encoded)
+        'len': len(eaten[3].decode('utf8')),
+        'iv': eaten[2].decode('utf8')
     })
 
 
