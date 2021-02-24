@@ -103,3 +103,28 @@ def connect():
         print(ex)
 
     return db_hosts
+
+
+def another_save(tag, hosts, cipher):
+    data_ok = cipher.decode('utf8')
+    cursor = hosts[0].cursor()
+    sql = """
+                INSERT INTO Test 
+                  (tag,data)
+                VALUES 
+                  (%(tag)s, %(data)s)
+                ON DUPLICATE KEY UPDATE
+                  tag  = values(tag),
+                  data = values(data) 
+                """
+    print(tag)
+    cursor.execute(sql, {
+        'tag': tag,
+        'data': data_ok
+    })
+    hosts[0].commit()
+    hosts[0].close()
+    print({
+        'tag': tag,
+        'data': data_ok
+    })

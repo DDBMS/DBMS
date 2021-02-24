@@ -15,7 +15,6 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = "./"
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB
 
-
 """
 DBHosts = []
 try:
@@ -25,6 +24,7 @@ try:
 except Exception as ex:
     print(ex)
 """
+
 
 @app.route('/')
 def index():
@@ -40,7 +40,6 @@ def test():
             DBHosts.append(pymysql.connect(**host))
     except Exception as ex:
         print(ex)
-
 
     for conn in DBHosts:
         cursor_object = conn.cursor()
@@ -84,6 +83,44 @@ def upload():
         tag=tag,
         hosts=db_hosts,
         key=eaten[0],
+        cipher=eaten[3]
+    )
+
+    return jsonify({
+        'status': True,
+        'tag': tag,
+        'len': len(eaten[3].decode('utf8')),
+        'iv': eaten[2].decode('utf8')
+    })
+
+
+# 實驗對照組
+@app.route('/file/upload2')
+def upload2():
+    """
+        data
+        tag
+        key
+    """
+    # Database Integration
+    db_hosts = AccessData.connect()
+
+    # HTTP Request Params
+    tag = request.form.get('tag')
+    key = request.form.get('key')
+    data = request.files['data'].read()
+
+    # 處理並加密資料
+    eaten = EatData.encrypt(
+        key=key,
+        data=data,
+        db_num=len(db_hosts)
+    )  # map_key, data_b64, iv_b64, cipher_b64
+
+    # 儲存資料
+    AccessData.another_save(
+        tag=tag,
+        hosts=db_hosts,
         cipher=eaten[3]
     )
 
