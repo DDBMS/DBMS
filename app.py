@@ -95,7 +95,7 @@ def upload():
 
 
 # 實驗對照組
-@app.route('/file/upload2')
+@app.route('/file/upload2', methods=['POST'])
 def upload2():
     """
         data
