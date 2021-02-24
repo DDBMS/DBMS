@@ -13,7 +13,7 @@ import AccessData
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = "./"
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB
+app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 16MB
 
 """
 DBHosts = []
