@@ -1,3 +1,7 @@
+import argparse
+import sys
+from random import uniform
+
 from flask import Flask, request, jsonify
 import pymysql
 import base64
@@ -173,5 +177,24 @@ def content():
     })
 
 
+def gen_slen():
+    with open('slen.conf','w+') as f:
+        arr = ['a', 'b', 'c', 'd', 'e', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+        for c in arr:
+            f.write('{} {:.2f}\n'.format(c, uniform(0.1, 0.7)))
+
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True, port=10022)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("mode",
+                        help="Generate the SplitLength config",
+                        choices=['gen','serve'])
+    parser.add_argument("--host", help="Server host", nargs = '*',default='0.0.0.0',type=str)
+    args = parser.parse_args()
+    if args.mode:
+        if args.mode == 'gen':
+            gen_slen()
+            print("generate!")
+        elif args.mode == 'serve':
+            app.run(host=args.host, debug=True, port=10022)
+
