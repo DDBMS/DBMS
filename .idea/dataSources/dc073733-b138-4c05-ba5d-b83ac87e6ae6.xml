@@ -1041,5 +1041,20 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
       <Host>localhost</Host>
       <Plugin>caching_sha2_password</Plugin>
     </user>
+    <table id="286" parent="3" name="Test"/>
+    <column id="287" parent="286" name="tag">
+      <Position>1</Position>
+      <DataType>varchar(36)|0s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="288" parent="286" name="data">
+      <Position>2</Position>
+      <DataType>longtext|0s</DataType>
+    </column>
+    <key id="289" parent="286" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>tag</ColNames>
+      <Primary>1</Primary>
+    </key>
   </database-model>
 </dataSource>
