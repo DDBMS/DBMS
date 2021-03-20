@@ -122,7 +122,7 @@ def content():
     key = request.form.get('key')
     iv = request.form.get('iv').encode('utf8')
     data_length = int(request.form.get('len'))
-
+    print(11)
     # 讀取資料
     cipher = AccessData.read(
         tag=tag,

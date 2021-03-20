@@ -1,3 +1,5 @@
+#  Copyright (c) 2021. DBMS
+
 DBGroups = [
     {
         "port": 3307,
@@ -29,3 +31,5 @@ with open('slen.conf', 'r') as f:
     lines = f.readlines()
     for line in lines:
         SplitLength[line.split(' ')[0]] = float(line.split(' ')[1])
+
+FixedLength = 1.5

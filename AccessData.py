@@ -1,10 +1,10 @@
-
 #  Copyright (c) 2021. DBMS
 
 import pymysql
 from Crypto.Hash import SHA1
 
-from config import SplitLength, DBGroups
+from config import SplitLength, DBGroups, FixedLength
+from Utils.Padding import random_rpad
 
 
 def save(tag, hosts, key, cipher):
@@ -27,6 +27,9 @@ def save(tag, hosts, key, cipher):
         if out: break
 
     for X in queue:
+        """
+        X : (第幾個DB, (起始index, 結束index))
+        """
         cursor = hosts[X[0]].cursor()
         sql = """
         INSERT INTO Test 
@@ -37,17 +40,53 @@ def save(tag, hosts, key, cipher):
           tag  = values(tag),
           data = values(data) 
         """
-        print(tag)
+
+        to_save = data_ok[X[1][0]:X[1][0] + X[1][1]]
+        print(f"""
+        Origin Data: {to_save}
+        """)
+        to_save = random_rpad(to_save, int(len(to_save) * FixedLength))
+        print(f"""
+        Tag : {tag}
+        Saved Data : {to_save}
+        """)
         cursor.execute(sql, {
             'tag': tag,
-            'data': data_ok[X[1][0]:X[1][0] + X[1][1]]
+            'data': to_save
         })
         hosts[X[0]].commit()
-        hosts[X[0]].close()
-    print({
-        'tag': tag,
-        'data': data_ok[X[1][0]:X[1][0] + X[1][1]]
-    })
+
+        sql = """
+            INSERT INTO Test 
+                (tag,data)
+            VALUES 
+                (%(tag)s, %(data)s)
+            ON DUPLICATE KEY UPDATE
+                tag  = values(tag),
+                data = values(data) 
+        """
+        cursor = hosts[(X[0] + 1 + len(DBGroups)) % len(DBGroups)].cursor()
+        cursor.execute(sql, {
+            'tag': tag + '_bak_n',
+            'data': to_save[int(len(to_save) * 0.5):len(to_save)]
+        })
+        hosts[(X[0] + 1 + len(DBGroups)) % len(DBGroups)].commit()
+
+        sql = """
+                    INSERT INTO Test 
+                        (tag,data)
+                    VALUES 
+                        (%(tag)s, %(data)s)
+                    ON DUPLICATE KEY UPDATE
+                        tag  = values(tag),
+                        data = values(data) 
+                """
+        cursor = hosts[(X[0] - 1 + len(DBGroups)) % len(DBGroups)].cursor()
+        cursor.execute(sql, {
+            'tag': tag + '_bak_p',
+            'data': to_save[0:int(len(to_save) * 0.5)]
+        })
+        hosts[(X[0] - 1 + len(DBGroups)) % len(DBGroups)].commit()
 
 
 def read(tag, hosts, key, data_length):
@@ -91,7 +130,9 @@ def read(tag, hosts, key, data_length):
         hosts[X[0]].close()
 
         if got:
-            data += got['data']
+            print(f"Origin Got: {got['data']}")
+            print(f"Final  Got: {got['data'][0:X[1][1]]}")
+            data += got['data'][0:X[1][1]]
 
     return data
 
