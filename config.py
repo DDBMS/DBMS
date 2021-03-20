@@ -1,23 +1,23 @@
 DBGroups = [
     {
         "port": 3307,
-        "host": '0.0.0.0',
+        "host": '192.168.4.200',
         "user": "root",
         "password": "root_toor",
         "db": "my_db",
         "charset": "utf8"
     },
     {
-        "port": 3306,
-        "host": '172.49.0.3',
+        "port": 3308,
+        "host": '192.168.4.200',
         "user": "root",
         "password": "root_toor",
         "db": "my_db",
         "charset": "utf8"
     },
     {
-        "port": 3306,
-        "host": '172.48.0.3',
+        "port": 3309,
+        "host": '192.168.4.200',
         "user": "root",
         "password": "root_toor",
         "db": "my_db",
