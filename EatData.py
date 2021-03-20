@@ -1,3 +1,6 @@
+
+#  Copyright (c) 2021. DBMS
+
 from Crypto.Hash import SHA1
 from Crypto.Protocol.KDF import PBKDF2
 from Crypto.Cipher import AES

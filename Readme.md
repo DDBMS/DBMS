@@ -9,3 +9,7 @@ python3 app.py serve [--host]
 ```shell
 python3 app.py gen
 ```
+
+## Changelog
+#### version 1.0
+First Version

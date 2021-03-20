@@ -1,3 +1,6 @@
+
+#  Copyright (c) 2021. DBMS
+
 import random
 import string
 
