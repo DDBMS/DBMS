@@ -14,6 +14,7 @@ from Crypto.Util.Padding import pad, unpad
 from config import DBGroups, SplitLength
 import EatData
 import AccessData
+import Migration
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = "./"
@@ -33,31 +34,6 @@ except Exception as ex:
 @app.route('/')
 def index():
     return 'Hello, World!222222'
-
-
-@app.route('/test')
-def test():
-    DBHosts = []
-    try:
-        for host in DBGroups:
-            print('  > MySQL Host: ' + host['host'])
-            DBHosts.append(pymysql.connect(**host))
-    except Exception as ex:
-        print(ex)
-
-    for conn in DBHosts:
-        cursor_object = conn.cursor()
-        sql_query = """
-        CREATE TABLE IF NOT EXISTS `Test` (
-          tag varchar(36),
-          data longtext,
-          PRIMARY KEY (tag)
-        )
-        """
-        cursor_object.execute(sql_query)
-        print('  > MySQL Perform SQL: ' + sql_query)
-
-    return 'wow!!'
 
 
 @app.route('/file/upload', methods=['POST'])
@@ -188,7 +164,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("mode",
                         help="Generate the SplitLength config",
-                        choices=['gen','serve'])
+                        choices=['gen','serve','migrate'])
     parser.add_argument("--host", help="Server host", nargs = '*',default='0.0.0.0',type=str)
     args = parser.parse_args()
     if args.mode:
@@ -197,4 +173,7 @@ if __name__ == '__main__':
             print("generate!")
         elif args.mode == 'serve':
             app.run(host=args.host, debug=True, port=10022)
+        elif args.mode == 'migrate':
+            Migration.migrate()
+            print("Migrated!")
 

@@ -1,7 +1,7 @@
 DBGroups = [
     {
-        "port": 3306,
-        "host": '172.50.0.3',
+        "port": 3307,
+        "host": '0.0.0.0',
         "user": "root",
         "password": "root_toor",
         "db": "my_db",
